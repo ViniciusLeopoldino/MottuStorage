@@ -1,24 +1,24 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../types'; 
-
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
-
-export default function HomeScreen({ navigation }: { navigation: HomeScreenNavigationProp }) {
+export default function HomeScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bem-vindo ao Mottu Storage</Text>
+      <Text style={styles.title}>HOME</Text>
+
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TipoCadastro')}>
-        <Text style={styles.buttonText}>Cadastro</Text>
+        <Text style={styles.buttonText}>CADASTRO</Text>
       </TouchableOpacity>
+
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Recebimento')}>
-        <Text style={styles.buttonText}>Recebimento</Text>
+        <Text style={styles.buttonText}>RECEBIMENTO</Text>
       </TouchableOpacity>
+
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Consulta')}>
-        <Text style={styles.buttonText}>Consulta</Text>
+        <Text style={styles.buttonText}>CONSULTA</Text>
       </TouchableOpacity>
+
+      <Text style={styles.footer}>Desenvolvido por DPV-Tech</Text>
     </View>
   );
 }
@@ -26,27 +26,34 @@ export default function HomeScreen({ navigation }: { navigation: HomeScreenNavig
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#000',      // fundo preto
     alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 20,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
   },
   title: {
+    color: '#00FF00',             // texto verde
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 40,
   },
   button: {
-    backgroundColor: '#09978b',
-    padding: 15,
-    borderRadius: 8,
     width: '100%',
+    backgroundColor: '#00FF00',   // botão verde
+    borderRadius: 50,             // pill
+    paddingVertical: 16,
     alignItems: 'center',
-    marginBottom: 20,
+    marginVertical: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 20,
+    color: '#444',
+    fontSize: 12,
   },
 });
