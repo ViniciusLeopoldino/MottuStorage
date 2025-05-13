@@ -1,7 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type RootStackParamList = {
+  ConsultaScreen: undefined;
+  Home: undefined; 
+};
+
+type TipoCadastroScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'ConsultaScreen'
+>;
 
 export default function ConsultaScreen() {
+  const navigation = useNavigation<TipoCadastroScreenNavigationProp>();
   const [codigoConsulta, setCodigoConsulta] = useState('');
   const [dadosVeiculo, setDadosVeiculo] = useState<{
     placa: string;
@@ -29,34 +42,52 @@ export default function ConsultaScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Consulta de Veículo</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Insira o código do QR Code ou código de barras"
-        value={codigoConsulta}
-        onChangeText={setCodigoConsulta}
-      />
-      <TouchableOpacity style={styles.button} onPress={consultarVeiculo}>
-        <Text style={styles.buttonText}>Consultar</Text>
-      </TouchableOpacity>
+    <View style={styles.wrapper}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Consulta de Veículo</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Insira o código do QR Code ou código de barras"
+          value={codigoConsulta}
+          onChangeText={setCodigoConsulta}
+        />
+        <TouchableOpacity style={styles.button} onPress={consultarVeiculo}>
+          <Text style={styles.buttonText}>Consultar</Text>
+        </TouchableOpacity>
+        
 
-      {dadosVeiculo && (
-        <View style={styles.resultado}>
-          <Text style={styles.resultadoTitulo}>Dados do Veículo:</Text>
-          {Object.entries(dadosVeiculo).map(([key, value]) => (
-            <Text key={key} style={styles.resultadoTexto}>{`${key.toUpperCase()}: ${value}`}</Text>
-          ))}
-        </View>
-      )}
-    </ScrollView>
+        {dadosVeiculo && (
+          <View style={styles.resultado}>
+            <Text style={styles.resultadoTitulo}>Dados do Veículo:</Text>
+            {Object.entries(dadosVeiculo).map(([key, value]) => (
+              <Text key={key} style={styles.resultadoTexto}>{`${key.toUpperCase()}: ${value}`}</Text>
+            ))}
+          </View>
+        )}
+        </ScrollView>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Home')}
+        >
+          <Text style={styles.buttonText}>VOLTAR</Text>
+        </TouchableOpacity>
+        <Text style={styles.footer}>Desenvolvido por DPV-Tech</Text>
+      
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#000',
+    justifyContent: 'space-between',
     padding: 20,
-    backgroundColor: '#fff',
+  },
+  container: { 
+    flexGrow: 1, 
+    justifyContent: 'center', 
+    padding: 20 
   },
   title: {
     fontSize: 24,
@@ -65,21 +96,27 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
+    width: '100%',
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 20,
+    borderColor: '#00FF00',
+    borderRadius: 25,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 15,
   },
   button: {
-    backgroundColor: '#09978b',
-    padding: 15,
-    borderRadius: 8,
+    width: '100%',
+    backgroundColor: '#00FF00',
+    borderRadius: 25,
+    paddingVertical: 14,
     alignItems: 'center',
     marginBottom: 20,
   },
   buttonText: {
-    color: '#fff',
+    color: '#000',
+    fontSize: 16,
     fontWeight: 'bold',
   },
   resultado: {
@@ -94,5 +131,11 @@ const styles = StyleSheet.create({
   },
   resultadoTexto: {
     marginBottom: 5,
+  },
+  footer: {
+    color: '#555',
+    fontSize: 12,
+    textAlign: 'center',
+    marginTop: 30,
   },
 });

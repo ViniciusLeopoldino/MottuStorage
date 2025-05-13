@@ -1,3 +1,5 @@
+// RecebimentoScreen.tsx
+
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -8,27 +10,30 @@ import {
   Alert,
 } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
-export default function RecebimentoScreen() {
-  const navigation = useNavigation();
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+// Tipo das rotas
+type RootStackParamList = {
+  Home: undefined;
+};
+
+const RecebimentoScreen: React.FC = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  // Permissões do scanner
+  const [permission, requestPermission] = BarCodeScanner.usePermissions();
   const [scanningType, setScanningType] = useState<'none' | 'qr' | 'loc'>('none');
   const [codigoVeiculo, setCodigoVeiculo] = useState<string>('');
   const [codigoLocal, setCodigoLocal] = useState<string>('');
   const [mensagem, setMensagem] = useState<string>('');
 
-  // Só pedimos permissão em dispositivos nativos
+  // Se for nativo, pede permissão; no web liberamos
   useEffect(() => {
-    if (Platform.OS !== 'web') {
-      (async () => {
-        const { status } = await BarCodeScanner.requestPermissionsAsync();
-        setHasPermission(status === 'granted');
-      })();
+    if (Platform.OS !== 'web' && !permission) {
+      requestPermission();
     }
-  }, []);
+  }, [permission]);
 
-  // Lida com captura no scanner
   const handleBarCodeScanned = ({ data }: { data: string }) => {
     if (scanningType === 'qr') {
       setCodigoVeiculo(data);
@@ -40,8 +45,8 @@ export default function RecebimentoScreen() {
     setScanningType('none');
   };
 
-  // Fallback web: prompt para digitar código
   const manualInput = async (type: 'qr' | 'loc') => {
+    if (Platform.OS !== 'web') return;
     const texto = window.prompt(
       type === 'qr'
         ? 'Cole aqui o conteúdo do QR Code do veículo:'
@@ -57,17 +62,22 @@ export default function RecebimentoScreen() {
     }
   };
 
-  // Quando clicar em Identificação ou Localização
-  const onPressIdentify = (type: 'qr' | 'loc') => {
+  const onPressIdentify = async (type: 'qr' | 'loc') => {
     setMensagem('');
     if (Platform.OS === 'web') {
       manualInput(type);
     } else {
+      if (!permission?.granted) {
+        const { granted } = await requestPermission();
+        if (!granted) {
+          Alert.alert('Permissão necessária', 'Precisamos de acesso à câmera para escanear.');
+          return;
+        }
+      }
       setScanningType(type);
     }
   };
 
-  // Mock de armazenagem
   const handleArmazenar = () => {
     Alert.alert('Sucesso', `Veículo ${codigoVeiculo}\narmazenado em ${codigoLocal}`);
     setCodigoVeiculo('');
@@ -75,9 +85,9 @@ export default function RecebimentoScreen() {
     setMensagem('');
   };
 
-  // Tela de scanner (nativo)
+  // Tela de scanner nativa
   if (Platform.OS !== 'web' && scanningType !== 'none') {
-    if (hasPermission === false) {
+    if (!permission?.granted) {
       return (
         <View style={styles.container}>
           <Text style={styles.errorText}>Sem acesso à câmera</Text>
@@ -90,7 +100,10 @@ export default function RecebimentoScreen() {
           onBarCodeScanned={handleBarCodeScanned}
           style={StyleSheet.absoluteFillObject}
         />
-        <TouchableOpacity style={styles.cancelButton} onPress={() => setScanningType('none')}>
+        <TouchableOpacity
+          style={styles.cancelButton}
+          onPress={() => setScanningType('none')}
+        >
           <Text style={styles.cancelText}>Cancelar</Text>
         </TouchableOpacity>
       </View>
@@ -99,6 +112,7 @@ export default function RecebimentoScreen() {
 
   // Tela principal
   return (
+    <View style={styles.wrapper}>
     <View style={styles.container}>
       <Text style={styles.title}>Recebimento de Veículo</Text>
 
@@ -122,14 +136,26 @@ export default function RecebimentoScreen() {
 
       {!!mensagem && <Text style={styles.message}>{mensagem}</Text>}
 
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.backButtonText}>VOLTAR</Text>
+
+    </View>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+        <Text style={styles.buttonText}>VOLTAR</Text>
       </TouchableOpacity>
+
+      <Text style={styles.footer}>Desenvolvido por DPV-Tech</Text>
     </View>
   );
-}
+};
+
+export default RecebimentoScreen;
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#000',
+    justifyContent: 'space-between',
+    padding: 20,
+  },
   container: {
     flex: 1,
     backgroundColor: '#000',
@@ -149,17 +175,16 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-    backgroundColor: '#000',
-    borderColor: '#00FF00',
-    borderWidth: 2,
+    backgroundColor: '#00FF00',
     borderRadius: 25,
     paddingVertical: 14,
     alignItems: 'center',
     marginBottom: 20,
   },
   buttonText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
+    fontWeight: 'bold',
   },
   storeButton: {
     width: '100%',
@@ -183,19 +208,6 @@ const styles = StyleSheet.create({
     color: '#f00',
     textAlign: 'center',
   },
-  backButton: {
-    position: 'absolute',
-    bottom: 30,
-    borderColor: '#00FF00',
-    borderWidth: 1,
-    borderRadius: 25,
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-  },
-  backButtonText: {
-    color: '#00FF00',
-    fontSize: 16,
-  },
   cancelButton: {
     position: 'absolute',
     top: 40,
@@ -206,5 +218,11 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     color: '#fff',
+  },
+  footer: {
+    textAlign: 'center',
+    color: '#555',
+    fontSize: 12,
+    paddingVertical: 10,
   },
 });

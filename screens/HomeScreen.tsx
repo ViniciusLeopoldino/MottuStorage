@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default function HomeScreen({ navigation }: any) {
   return (
+    <View style={styles.wrapper}>
     <View style={styles.container}>
       <Text style={styles.title}>HOME</Text>
 
@@ -17,6 +18,10 @@ export default function HomeScreen({ navigation }: any) {
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Consulta')}>
         <Text style={styles.buttonText}>CONSULTA</Text>
       </TouchableOpacity>
+      </View>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.buttonText}>SAIR</Text>
+      </TouchableOpacity>
 
       <Text style={styles.footer}>Desenvolvido por DPV-Tech</Text>
     </View>
@@ -24,6 +29,12 @@ export default function HomeScreen({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
+    wrapper: {
+    flex: 1,
+    backgroundColor: '#000',
+    justifyContent: 'space-between',
+    padding: 20,
+  },
   container: {
     flex: 1,
     backgroundColor: '#000',      // fundo preto
@@ -51,9 +62,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   footer: {
-    position: 'absolute',
-    bottom: 20,
-    color: '#444',
+    textAlign: 'center',
+    color: '#555',
     fontSize: 12,
+    paddingVertical: 10,
   },
 });

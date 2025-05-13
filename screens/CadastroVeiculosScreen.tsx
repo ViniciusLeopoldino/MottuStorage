@@ -60,6 +60,7 @@ export default function CadastroVeiculoScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Cadastro de Veiculos</Text>
         <View style={styles.form}>
           {(
             ['placa', 'chassi', 'modelo', 'km', 'contrato', 'ocorrencia'] as const
@@ -111,6 +112,13 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     marginBottom: 15,
+  },
+    title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#00FF00',
+    textAlign: 'center',
+    marginBottom: 30,
   },
   button: {
     backgroundColor: '#00FF00',
