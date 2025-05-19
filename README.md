@@ -96,13 +96,34 @@ cd mottu-storage
 npm install
 ```
 
-### 3. Execute com Expo
+### 3. Execute
 
 ```bash
 npx expo start
 ```
 
-Abra o **Expo Go** no seu celular e escaneie o QR Code exibido no terminal.
+### 4. Pressione W para abrir no navegador
+
+```bash
+w
+```
+
+### 5. Login
+
+- Login: teste
+- Senha: teste
+
+### 6. Funcionalidades
+
+## Cadastro
+- Utilizar para cadastro de Veículos e Localizações
+
+## Recebimento
+- Utilizar para realizar o recebimento do veículo cadastrado e armazenar na posição indicada
+
+## Consulta
+- Utilizar para consultar veículos cadastrados com base na placa
+- É exibido os dados do veículo e a localização que o mesmo se encontra
 
 ---
 
