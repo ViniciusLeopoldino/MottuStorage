@@ -107,25 +107,6 @@ w
 #### Histórico
 - Exibe histórico dos últimos recebimentos realizados
 
----
-
-## 📌 Observações
-
-- Os dados são salvos localmente usando `AsyncStorage`
-- Leitura de QR Code e código de barras funciona na Web e no Android
-- A lógica de armazenamento é simulada, mas pronta para integração futura com banco de dados
-
----
-
-## 🧠 Possíveis Expansões
-
-- Integração com banco Oracle via API REST
-- Dashboard Web com estatísticas de motos armazenadas
-- Impressão direta dos QR Codes
-- Controle de múltiplos usuários
-
----
-
 ## 👨‍💻 Autor e Créditos
 
 **Desenvolvedor:** [Vinicius Leopoldino de Oliveira]  
