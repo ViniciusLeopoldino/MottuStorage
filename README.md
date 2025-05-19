@@ -25,15 +25,15 @@ O app **Mottu Storage** permite:
 
 ## 📱 Funcionalidades
 
-| Tela                    | Descrição                                                                 |
-|-------------------------|--------------------------------------------------------------------------|
-| **Login**               | Tela inicial com campos de login (simulado/local)                        |
-| **Home**                | Navegação para Cadastro, Recebimento e Consulta                          |
-| **Cadastro de Veículo** | Cadastro de moto + geração de QR Code + salvamento no dispositivo        |
-| **Cadastro de Localização** | Cadastro hierárquico (Armazém, Rua, Módulo, Compartimento)            |
-| **Recebimento**         | Leitura do QR da moto + código de barras da localização + armazenamento |
-| **Consulta**            | Consulta de veículo via PLACA, CHASSI ou CONTRATO                        |
-| **Mensagens Popup**     | Mensagens de sucesso ou erro ao usuário                                  |
+| Tela                    | Descrição                                                                                     |
+|-------------------------|-----------------------------------------------------------------------------------------------|
+| **Login**               | Tela inicial com campos de login (simulado/local)                                             |
+| **Home**                | Navegação para Cadastro, Recebimento, Consulta e Histórico                                    |
+| **Cadastro de Veículo** | Cadastro de moto + geração de QR Code + salvamento no dispositivo                             |
+| **Cadastro de Localização** | Cadastro de Localização para armazenar o veículo (Armazém, Rua, Módulo, Compartimento)    |
+| **Recebimento**         | Leitura do QR da moto + código de barras da localização para armazenamento                    |
+| **Consulta**            | Consulta de veículo via PLACA, CHASSI ou CONTRATO                                             |
+| **Histórico**           | Exibe histórico dos últimos veículos armazenados                                              |
 
 ---
 
@@ -123,7 +123,7 @@ w
 - Utilizar para realizar o recebimento do veículo cadastrado e armazenar na posição indicada
 
 #### Consulta
-- Utilizar para consultar veículos cadastrados com base na placa
+- Utilizar para consultar veículos cadastrados com base na PLACA, CHASSI ou CONTRATO
 - É exibido os dados do veículo e a localização que o mesmo se encontra
 
 #### Histórico
