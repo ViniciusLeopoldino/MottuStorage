@@ -20,7 +20,8 @@ O app **Mottu Storage** permite:
 - Cadastrar localizações com estrutura hierárquica  
 - Ler QR Code (moto) para gravar as informações  
 - Ler código de barras (local) para armazenar a moto no local  
-- Consultar local onde as motos estão armazenadas rapidamente  
+- Consultar local onde as motos estão armazenadas rapidamente
+- Consultar histórico de motos armazenadas
 
 ---
 
