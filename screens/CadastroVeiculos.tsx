@@ -15,11 +15,8 @@ import * as MediaLibrary from 'expo-media-library';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
-// Tela principal de cadastro de veículos
-export default function CadastroVeiculoScreen() {
+export default function CadastroVeiculo() {
   const navigation = useNavigation();
-
-  // Estado para armazenar os dados do veículo
   const [veiculo, setVeiculo] = useState({
     placa: '',
     chassi: '',
@@ -28,11 +25,8 @@ export default function CadastroVeiculoScreen() {
     contrato: '',
     ocorrencia: '',
   });
-
-  // Estado para mensagem de sucesso ou erro
   const [mensagemSucesso, setMensagemSucesso] = useState('');
 
-  // Limpa todos os campos do formulário
   const limparCampos = () => {
     setVeiculo({
       placa: '',
@@ -44,7 +38,6 @@ export default function CadastroVeiculoScreen() {
     });
   };
 
-  // Reutiliza o último cadastro salvo no AsyncStorage
   const reutilizarCadastro = async () => {
     try {
       const salvo = await AsyncStorage.getItem('ultimoCadastro');
@@ -60,24 +53,20 @@ export default function CadastroVeiculoScreen() {
     }
   };
 
-  // Gera o QRCode, salva o cadastro e faz download da imagem
   const handleDownloadQRCode = async () => {
     try {
       await AsyncStorage.setItem('ultimoCadastro', JSON.stringify(veiculo));
-
       const dataString = JSON.stringify(veiculo);
       const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
         dataString
       )}&size=300x300`;
 
-      // Para web, apenas abre o QR em nova aba
       if (Platform.OS === 'web') {
         window.open(qrUrl, '_blank');
         setMensagemSucesso('Veículo cadastrado com sucesso!');
         return;
       }
 
-      // Para mobile, faz download e salva na galeria
       const filename = FileSystem.documentDirectory + 'mottu-qr.png';
       const { uri } = await FileSystem.downloadAsync(qrUrl, filename);
       const { status } = await MediaLibrary.requestPermissionsAsync();
@@ -95,7 +84,6 @@ export default function CadastroVeiculoScreen() {
     }
   };
 
-  // Renderização do componente
   return (
     <KeyboardAvoidingView
       style={styles.wrapper}
@@ -103,9 +91,7 @@ export default function CadastroVeiculoScreen() {
     >
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Cadastro de Veículos</Text>
-
         <View style={styles.form}>
-          {/* Campos de entrada do formulário */}
           {(['placa', 'chassi', 'modelo', 'km', 'contrato', 'ocorrencia'] as const).map((key) => (
             <TextInput
               key={key}
@@ -118,8 +104,6 @@ export default function CadastroVeiculoScreen() {
               }
             />
           ))}
-
-          {/* Links para reutilizar cadastro e limpar campos */}
           <View style={styles.linkContainer}>
             <TouchableOpacity onPress={reutilizarCadastro}>
               <Text style={styles.linkText}>Reutilizar último cadastro</Text>
@@ -128,31 +112,22 @@ export default function CadastroVeiculoScreen() {
               <Text style={styles.linkText}>Limpar Campos</Text>
             </TouchableOpacity>
           </View>
-
-          {/* Botão para gerar e baixar o QRCode */}
           <TouchableOpacity style={styles.button} onPress={handleDownloadQRCode}>
             <Text style={styles.buttonText}>IMPRIMIR</Text>
           </TouchableOpacity>
-
-          {/* Mensagem de sucesso ou erro */}
           {mensagemSucesso !== '' && (
             <Text style={styles.successMessage}>{mensagemSucesso}</Text>
           )}
-
-          {/* Botão para voltar */}
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backButtonText}>VOLTAR</Text>
           </TouchableOpacity>
         </View>
-
-        {/* Rodapé */}
         <Text style={styles.footer}>Desenvolvido por DPV-Tech</Text>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
 
-// Estilos do componente
 const styles = StyleSheet.create({
   successMessage: {
     color: '#00FF00',
@@ -210,7 +185,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     width: '100%',
   },
-
   buttonText: {
     color: '#000',
     fontWeight: 'bold',
@@ -238,7 +212,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-
   backButtonText: { 
     color: '#00FF00',
     fontWeight: 'bold', 

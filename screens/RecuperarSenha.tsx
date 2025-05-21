@@ -1,23 +1,34 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-// Tela de recuperação de senha
-export default function ForgotPasswordScreen() {
+export default function ForgotPassword() {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
+  const [mensagem, setMensagem] = useState('');
+  const [tipoMensagem, setTipoMensagem] = useState<'erro' | 'sucesso' | ''>('');
 
-  // Função para lidar com a recuperação de senha
   const handleRecovery = () => {
     if (!email) {
-      Alert.alert('Erro', 'Por favor, informe seu e-mail.');
+      setMensagem('Preencha o campo de email.');
+      setTipoMensagem('erro');
       return;
     }
-    Alert.alert('Recuperação', 'Instruções enviadas para o seu e-mail.');
-    navigation.goBack();
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setMensagem('Email inválido.');
+      setTipoMensagem('erro');
+      return;
+    }
+
+    setMensagem('Siga os passos enviados para o seu email.');
+    setTipoMensagem('sucesso');
+
+    setTimeout(() => {
+      navigation.goBack();
+    }, 2000);
   };
 
-  // Renderização dos componentes da tela
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Recuperar Senha</Text>
@@ -27,7 +38,18 @@ export default function ForgotPasswordScreen() {
         placeholderTextColor="#00FF00"
         keyboardType="email-address"
         onChangeText={setEmail}
+        value={email}
       />
+      {mensagem !== '' && (
+        <Text
+          style={[
+            styles.mensagem,
+            tipoMensagem === 'erro' ? styles.erro : styles.sucesso,
+          ]}
+        >
+          {mensagem}
+        </Text>
+      )}
       <TouchableOpacity style={styles.button} onPress={handleRecovery}>
         <Text style={styles.buttonText}>Recuperar</Text>
       </TouchableOpacity>
@@ -38,7 +60,6 @@ export default function ForgotPasswordScreen() {
   );
 }
 
-// Estilos da tela de recuperação de senha
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -78,5 +99,17 @@ const styles = StyleSheet.create({
     color: '#00FF00',
     textAlign: 'center',
     textDecorationLine: 'underline',
+  },
+  mensagem: {
+    textAlign: 'center',
+    marginBottom: 15,
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  erro: {
+    color: '#ff4d4d',
+  },
+  sucesso: {
+    color: '#00FF00',
   },
 });

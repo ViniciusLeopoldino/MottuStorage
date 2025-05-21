@@ -1,4 +1,3 @@
-// Importação de dependências e tipos necessários
 import React, { useState } from 'react';
 import {
   View,
@@ -6,30 +5,24 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
   Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Definição dos tipos de navegação utilizados na tela
 type RootStackParamList = {
-  ConsultaScreen: undefined;
+  Consulta: undefined;
   Home: undefined;
 };
 
-type TipoCadastroScreenNavigationProp = StackNavigationProp<
+type TipoCadastroNavigationProp = StackNavigationProp<
   RootStackParamList,
-  'ConsultaScreen'
+  'Consulta'
 >;
 
-// Componente principal da tela de consulta de veículo
-export default function ConsultaScreen() {
-  // Hook de navegação
-  const navigation = useNavigation<TipoCadastroScreenNavigationProp>();
-
-  // Estados para armazenar o código de consulta e os dados do veículo consultado
+export default function Consulta() {
+  const navigation = useNavigation<TipoCadastroNavigationProp>();
   const [codigoConsulta, setCodigoConsulta] = useState('');
   const [dadosVeiculo, setDadosVeiculo] = useState<{
     placa: string;
@@ -40,7 +33,6 @@ export default function ConsultaScreen() {
     localizacao: string;
   } | null>(null);
 
-  // Função responsável por consultar os dados do veículo no AsyncStorage
   const consultarVeiculo = async () => {
     if (!codigoConsulta) {
       Alert.alert('Atenção', 'Por favor, insira um código válido.');
@@ -48,7 +40,6 @@ export default function ConsultaScreen() {
     }
 
     try {
-      // Busca os dados salvos anteriormente no AsyncStorage
       const cadastro = await AsyncStorage.getItem('ultimoCadastro');
       const local = await AsyncStorage.getItem('ultimaLocalizacao');
 
@@ -61,7 +52,6 @@ export default function ConsultaScreen() {
       const localizacao = JSON.parse(local);
       const nome_localizacao = `${localizacao.armazem}-${localizacao.rua}-${localizacao.modulo}-${localizacao.compartimento}`;
 
-      // Verifica se o código informado corresponde a algum campo do cadastro
       const encontrado =
         dados.placa === codigoConsulta ||
         dados.chassi === codigoConsulta ||
@@ -72,7 +62,6 @@ export default function ConsultaScreen() {
         return;
       }
 
-      // Atualiza o estado com os dados encontrados
       setDadosVeiculo({
         placa: dados.placa,
         modelo: dados.modelo,
@@ -87,14 +76,10 @@ export default function ConsultaScreen() {
     }
   };
 
-  // Renderização da interface da tela
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
-        {/* Título da tela */}
         <Text style={styles.title}>CONSULTA DE VEÍCULO</Text>
-
-        {/* Campo de entrada para código de consulta */}
         <TextInput
           style={styles.input}
           placeholder="Insira PLACA, CHASSI ou CONTRATO"
@@ -102,13 +87,9 @@ export default function ConsultaScreen() {
           value={codigoConsulta}
           onChangeText={setCodigoConsulta}
         />
-
-        {/* Botão para acionar a consulta */}
         <TouchableOpacity style={styles.button} onPress={consultarVeiculo}>
           <Text style={styles.buttonText}>CONSULTAR</Text>
         </TouchableOpacity>
-
-        {/* Exibição dos dados do veículo, caso encontrados */}
         {dadosVeiculo && (
           <View style={styles.resultado}>
             <Text style={styles.resultadoTitulo}>Dados do Veículo:</Text>
@@ -120,35 +101,30 @@ export default function ConsultaScreen() {
           </View>
         )}
       </View>
-
-      {/* Botão para voltar à tela inicial */}
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigation.navigate('Home')}
       >
         <Text style={styles.backButtonText}>VOLTAR</Text>
       </TouchableOpacity>
-
-      {/* Rodapé com créditos */}
       <Text style={styles.footer}>Desenvolvido por DPV-Tech</Text>
     </View>
   );
 }
 
-// Estilos utilizados na tela
 const styles = StyleSheet.create({
-wrapper: {
-  flex: 1,
-  backgroundColor: '#000',
-  justifyContent: 'center',
-  alignItems: 'center',
-  paddingHorizontal: 20,
-  paddingBottom: 30, // espaço pro rodapé
-},
-container: {
-  width: '100%',
-  alignItems: 'center',
-},
+  wrapper: {
+    flex: 1,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+  },
+  container: {
+    width: '100%',
+    alignItems: 'center',
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -175,14 +151,12 @@ container: {
     marginTop: 10,
     width: '100%',
   },
-
-    buttonText: {
+  buttonText: {
     color: '#000',
     fontSize: 16,
     fontWeight: 'bold',
   },
-
-      backButton: {
+  backButton: {
     marginTop: 15,
     padding: 12,
     borderRadius: 25,
@@ -191,13 +165,11 @@ container: {
     alignItems: 'center',
     width: '100%',
   },
-
-  backButtonText: { 
+  backButtonText: {
     color: '#00FF00',
-    fontWeight: 'bold', 
-    fontSize: 16, 
+    fontWeight: 'bold',
+    fontSize: 16,
   },
-
   resultado: {
     marginTop: 20,
     padding: 20,
@@ -214,11 +186,11 @@ container: {
     color: '#fff',
   },
   footer: {
-  position: 'absolute',
-  bottom: 10,
-  textAlign: 'center',
-  color: '#555',
-  fontSize: 12,
-  width: '100%',
+    position: 'absolute',
+    bottom: 10,
+    textAlign: 'center',
+    color: '#555',
+    fontSize: 12,
+    width: '100%',
   },
 });

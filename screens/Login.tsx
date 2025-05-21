@@ -1,38 +1,49 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../context/AuthContext';
 
-// Tela de Login principal
-export default function LoginScreen({ navigation }: any) {
-  // Estados para armazenar login e senha digitados pelo usuário
+export default function Login({ navigation }: any) {
   const [login, setLogin] = useState('');
   const [senha, setSenha] = useState('');
+  const [mensagemErro, setMensagemErro] = useState('');
+  const { login: loginContext } = useAuth();
 
-  // Função chamada ao pressionar o botão de login
-  const handleLogin = () => {
-    if (login && senha) {
-      // Se ambos os campos estiverem preenchidos, navega para a tela Home
-      navigation.replace('Home');
-    } else {
-      // Caso contrário, exibe alerta solicitando preenchimento dos campos
-      alert('Preencha todos os campos');
+  const handleLogin = async () => {
+    setMensagemErro('');
+    if (!login || !senha) {
+      setMensagemErro('Preencha todos os campos.');
+      return;
+    }
+    try {
+      const usersString = await AsyncStorage.getItem('usuarios');
+      const users = usersString ? JSON.parse(usersString) : [];
+      const usuarioEncontrado = users.find(
+        (u: any) => u.email === login && u.senha === senha
+      );
+      if (!usuarioEncontrado) {
+        setMensagemErro('Usuário ou senha incorretos.');
+        return;
+      }
+      await loginContext(usuarioEncontrado.email);
+    } catch (error) {
+      setMensagemErro('Erro ao fazer login.');
+      console.error(error);
     }
   };
 
   return (
     <View style={styles.container}>
-      {/* Logo da aplicação */}
       <Image source={require('../assets/icon.png')} style={styles.logo} />
-
-      {/* Campo de entrada para o login */}
       <TextInput
         style={styles.input}
         placeholder="Login"
         placeholderTextColor="#00FF00"
         value={login}
         onChangeText={setLogin}
+        autoCapitalize="none"
+        keyboardType="email-address"
       />
-
-      {/* Campo de entrada para a senha */}
       <TextInput
         style={styles.input}
         placeholder="Senha"
@@ -41,33 +52,27 @@ export default function LoginScreen({ navigation }: any) {
         value={senha}
         onChangeText={setSenha}
       />
-
-      {/* Botão de login */}
+      {mensagemErro !== '' && (
+        <Text style={styles.mensagemErro}>{mensagemErro}</Text>
+      )}
       <TouchableOpacity onPress={handleLogin} style={styles.button}>
         <Text style={styles.buttonText}>LOGIN</Text>
       </TouchableOpacity>
-
-      {/* Link para recuperar senha */}
       <TouchableOpacity onPress={() => navigation.navigate('RecuperarSenha')}>
         <Text style={styles.link}>Recuperar Senha</Text>
       </TouchableOpacity>
-
-      {/* Link para cadastrar novo usuário */}
       <TouchableOpacity onPress={() => navigation.navigate('Cadastrar')}>
         <Text style={styles.link}>Cadastrar</Text>
       </TouchableOpacity>
-
-      {/* Rodapé com informação do desenvolvedor */}
       <Text style={styles.footer}>Desenvolvido por DPV-Tech</Text>
     </View>
   );
 }
 
-// Estilos da tela de login
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',        // fundo preto
+    backgroundColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
@@ -80,18 +85,24 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-    borderColor: '#00FF00',         // borda verde vibrante
+    borderColor: '#00FF00',
     borderWidth: 2,
-    borderRadius: 50,               // formato pill
+    borderRadius: 50,
     paddingVertical: 14,
     paddingHorizontal: 20,
     color: '#FFF',
     marginBottom: 15,
     fontSize: 16,
   },
+  mensagemErro: {
+    color: '#ff4d4d',
+    marginBottom: 15,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   button: {
     width: '100%',
-    backgroundColor: '#00FF00',     // botão verde
+    backgroundColor: '#00FF00',
     borderRadius: 50,
     paddingVertical: 14,
     alignItems: 'center',

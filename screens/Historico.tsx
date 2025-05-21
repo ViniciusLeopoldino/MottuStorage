@@ -11,19 +11,16 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
-// Interface para o objeto de recebimento
 interface Recebimento {
   veiculo: string;
   localizacao: string;
   data: string;
 }
 
-export default function HistoricoScreen() {
-  // Estado para armazenar o histórico de recebimentos
+export default function Historico() {
   const [historico, setHistorico] = useState<Recebimento[]>([]);
   const navigation = useNavigation();
 
-  // Carrega o histórico sempre que a tela entra em foco
   useFocusEffect(
     useCallback(() => {
       const carregarHistorico = async () => {
@@ -35,18 +32,13 @@ export default function HistoricoScreen() {
     }, [])
   );
 
-  // Limpa todo o histórico de recebimentos
   const limparHistorico = async () => {
     const isWeb = Platform.OS === 'web';
-
-    // Função auxiliar para apagar o histórico
     const apagar = async () => {
       await AsyncStorage.removeItem('historicoRecebimentos');
       setHistorico([]);
       Alert.alert('Sucesso', 'Histórico apagado com sucesso!');
     };
-
-    // Confirmação diferente para web e mobile
     if (isWeb) {
       const confirmar = window.confirm('Deseja apagar todo o histórico?');
       if (confirmar) await apagar();
@@ -62,11 +54,8 @@ export default function HistoricoScreen() {
     }
   };
 
-  // Remove apenas um item do histórico pelo índice
   const removerItem = (index: number) => {
     const isWeb = Platform.OS === 'web';
-
-    // Função auxiliar para executar a remoção
     const executarRemocao = async () => {
       const novoHistorico = [...historico];
       novoHistorico.splice(index, 1);
@@ -74,8 +63,6 @@ export default function HistoricoScreen() {
       await AsyncStorage.setItem('historicoRecebimentos', JSON.stringify(novoHistorico));
       Alert.alert('Item removido');
     };
-
-    // Confirmação diferente para web e mobile
     if (isWeb) {
       const confirmar = window.confirm('Deseja remover este item?');
       if (confirmar) executarRemocao();
@@ -91,17 +78,13 @@ export default function HistoricoScreen() {
     }
   };
 
-  // Renderização da tela
   return (
     <View style={styles.wrapper}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Histórico de Recebimentos</Text>
-
-        {/* Exibe mensagem caso não haja itens no histórico */}
+        <Text style={styles.title}>HISTÓRICO DE RECEBIMENTOS</Text>
         {historico.length === 0 ? (
           <Text style={styles.empty}>Nenhum recebimento armazenado ainda.</Text>
         ) : (
-          // Lista os itens do histórico
           historico.map((item, index) => (
             <View key={index} style={styles.item}>
               <Text style={styles.text}>Veículo: {item.veiculo}</Text>
@@ -113,33 +96,26 @@ export default function HistoricoScreen() {
                 style={styles.deleteButton}
                 onPress={() => removerItem(index)}
               >
-                <Text style={styles.deleteText}>Excluir</Text>
+                <Text style={styles.deleteText}>EXCLUIR</Text>
               </TouchableOpacity>
             </View>
           ))
         )}
       </ScrollView>
-
-      {/* Botão para voltar à tela anterior */}
-      <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-        <Text style={styles.buttonText}>Voltar</Text>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Text style={styles.backButtonText}>VOLTAR</Text>
       </TouchableOpacity>
-
-      {/* Botão para limpar todo o histórico */}
       <TouchableOpacity
         style={[styles.button, { backgroundColor: '#880000' }]}
         onPress={limparHistorico}
       >
-        <Text style={styles.buttonText}>Limpar Histórico</Text>
+        <Text style={styles.buttonText}>LIMPAR HISTÓRICO</Text>
       </TouchableOpacity>
-
-      {/* Rodapé com informação do desenvolvedor */}
       <Text style={styles.footer}>Desenvolvido por DPV-Tech</Text>
     </View>
   );
 }
 
-// Estilos da tela
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
@@ -192,6 +168,20 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#000',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  backButton: {
+    marginTop: 15,
+    padding: 12,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: '#00FF00',
+    alignItems: 'center',
+    width: '100%',
+  },
+  backButtonText: {
+    color: '#00FF00',
     fontWeight: 'bold',
     fontSize: 16,
   },
