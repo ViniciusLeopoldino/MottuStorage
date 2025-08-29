@@ -1,7 +1,7 @@
 // Define a URL base da sua API.
 // Use 'http://10.0.2.2:8080' para o emulador Android.
 // Use o IP da sua máquina na rede para um dispositivo físico.
-const BASE_URL = 'https://api-dpvtech.onrender.com';
+const BASE_URL = 'https://api-dpvtech.onrender.com/api';
 
 
 /**
