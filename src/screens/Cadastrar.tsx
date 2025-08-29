@@ -1,93 +1,101 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { api } from '../services/api';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Register() {
+  const theme = useTheme();
+  const styles = getStyles(theme);
   const navigation = useNavigation();
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [mensagem, setMensagem] = useState('');
   const [tipoMensagem, setTipoMensagem] = useState<'erro' | 'sucesso' | ''>('');
 
   const handleRegister = async () => {
+    setMensagem('');
+    setTipoMensagem('');
+
     if (!username || !email || !password || !confirmPassword) {
       setMensagem('Preencha todos os campos.');
       setTipoMensagem('erro');
       return;
     }
-
     if (password !== confirmPassword) {
       setMensagem('As senhas não coincidem.');
       setTipoMensagem('erro');
       return;
     }
-
     if (password.length < 6) {
       setMensagem('A senha deve ter pelo menos 6 caracteres.');
       setTipoMensagem('erro');
       return;
     }
-
     if (!/\S+@\S+\.\S+/.test(email)) {
       setMensagem('Email inválido.');
       setTipoMensagem('erro');
       return;
     }
 
+    setIsLoading(true);
+
     try {
-      const usersString = await AsyncStorage.getItem('usuarios');
-      const users = usersString ? JSON.parse(usersString) : [];
-      const jaExiste = users.some((u: any) => u.email === email);
-      if (jaExiste) {
-        setMensagem('Este email já está cadastrado.');
-        setTipoMensagem('erro');
-        return;
-      }
-      const novoUsuario = { username, email, senha: password };
-      const novosUsuarios = [...users, novoUsuario];
-      await AsyncStorage.setItem('usuarios', JSON.stringify(novosUsuarios));
-      setMensagem('Usuário cadastrado com sucesso!');
+      await api.register({
+        nome: username,
+        email: email,
+        senha: password
+      });
+      
+      setMensagem('Utilizador registado com sucesso!');
       setTipoMensagem('sucesso');
-      setUsername('');
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
+      
       setTimeout(() => {
         navigation.goBack();
       }, 1500);
-    } catch (err) {
-      setMensagem('Erro ao salvar usuário.');
+
+    } catch (error: any) {
+      setMensagem(error.message || 'Erro ao registar utilizador.');
       setTipoMensagem('erro');
-      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Cadastro</Text>
+      <Text style={styles.title}>Registo</Text>
       <TextInput
         style={styles.input}
-        placeholder="Nome de Usuário"
-        placeholderTextColor="#00FF00"
+        placeholder="Nome de Utilizador"
+        placeholderTextColor={theme.colors.primary}
         onChangeText={setUsername}
         value={username}
       />
       <TextInput
         style={styles.input}
         placeholder="Email"
-        placeholderTextColor="#00FF00"
+        placeholderTextColor={theme.colors.primary}
         keyboardType="email-address"
+        autoCapitalize="none"
         onChangeText={setEmail}
         value={email}
       />
       <TextInput
         style={styles.input}
         placeholder="Senha"
-        placeholderTextColor="#00FF00"
+        placeholderTextColor={theme.colors.primary}
         secureTextEntry
         onChangeText={setPassword}
         value={password}
@@ -95,7 +103,7 @@ export default function Register() {
       <TextInput
         style={styles.input}
         placeholder="Confirmar Senha"
-        placeholderTextColor="#00FF00"
+        placeholderTextColor={theme.colors.primary}
         secureTextEntry
         onChangeText={setConfirmPassword}
         value={confirmPassword}
@@ -110,53 +118,59 @@ export default function Register() {
           {mensagem}
         </Text>
       )}
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Cadastrar</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+
+      {isLoading ? (
+        <ActivityIndicator size="large" color={theme.colors.primary} style={{ marginVertical: 15 }} />
+      ) : (
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Registar</Text>
+        </TouchableOpacity>
+      )}
+      
+      <TouchableOpacity onPress={() => navigation.goBack()} disabled={isLoading}>
         <Text style={styles.link}>Voltar ao Login</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: theme.colors.background,
     justifyContent: 'center',
     padding: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#00FF00',
+    color: theme.colors.primary,
     marginBottom: 30,
     textAlign: 'center',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#00FF00',
+    borderColor: theme.colors.primary,
     borderRadius: 25,
-    color: '#fff',
+    color: theme.colors.text,
     paddingHorizontal: 20,
     paddingVertical: 12,
     marginBottom: 15,
   },
   button: {
-    backgroundColor: '#00FF00',
+    backgroundColor: theme.colors.primary,
     padding: 15,
     borderRadius: 25,
     alignItems: 'center',
     marginBottom: 20,
   },
   buttonText: {
-    color: '#000',
+    color: theme.colors.background,
     fontWeight: 'bold',
     fontSize: 16,
   },
   link: {
-    color: '#00FF00',
+    color: theme.colors.primary,
     textAlign: 'center',
     textDecorationLine: 'underline',
   },
@@ -167,9 +181,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   erro: {
-    color: '#ff4d4d',
+    color: theme.colors.error,
   },
   sucesso: {
-    color: '#00FF00',
+    color: theme.colors.primary,
   },
 });

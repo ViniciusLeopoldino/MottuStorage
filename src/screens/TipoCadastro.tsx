@@ -1,33 +1,30 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../types';
+import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../context/ThemeContext';
 
-type TipoCadastroNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'TipoCadastro'
->;
+export default function TipoCadastro() {
+  // A utilização do 'any' aqui é uma forma simples de contornar a tipagem complexa
+  // do navigation, adequada para este contexto.
+  const navigation = useNavigation<any>();
+  const theme = useTheme();
+  const styles = getStyles(theme);
 
-export default function TipoCadastro({
-  navigation,
-}: {
-  navigation: TipoCadastroNavigationProp;
-}) {
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
-        <Text style={styles.title}>TIPO DE CADASTRO</Text>
+        <Text style={styles.title}>TIPO DE REGISTO</Text>
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('CadastroVeiculo')}
         >
-          <Text style={styles.buttonText}>CADASTRO DE VEÍCULO</Text>
+          <Text style={styles.buttonText}>REGISTO DE VEÍCULO</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('CadastroLocalizacao')}
         >
-          <Text style={styles.buttonText}>CADASTRO DE LOCALIZAÇÃO</Text>
+          <Text style={styles.buttonText}>REGISTO DE LOCALIZAÇÃO</Text>
         </TouchableOpacity>
       </View>
       <TouchableOpacity
@@ -41,10 +38,10 @@ export default function TipoCadastro({
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: theme.colors.background,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
@@ -57,12 +54,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#00FF00',
+    color: theme.colors.primary,
     textAlign: 'center',
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#00FF00',
+    backgroundColor: theme.colors.primary,
     paddingVertical: 15,
     borderRadius: 25,
     alignItems: 'center',
@@ -70,7 +67,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   buttonText: {
-    color: '#000',
+    color: theme.colors.background,
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -79,12 +76,12 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: '#00FF00',
+    borderColor: theme.colors.primary,
     alignItems: 'center',
     width: '100%',
   },
   backButtonText: {
-    color: '#00FF00',
+    color: theme.colors.primary,
     fontWeight: 'bold',
     fontSize: 16,
   },
@@ -92,7 +89,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     textAlign: 'center',
-    color: '#555',
+    color: theme.colors.border,
     fontSize: 12,
     width: '100%',
   },

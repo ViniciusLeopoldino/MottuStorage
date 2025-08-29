@@ -1,8 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext'; // 1. Importe o hook do tema
 
 export default function Home({ navigation }: any) {
+  const theme = useTheme(); // 2. Obtenha o tema atual
+  const styles = getStyles(theme); // 3. Crie os estilos com base no tema
   const { logout } = useAuth();
 
   const handleLogout = async () => {
@@ -10,6 +13,7 @@ export default function Home({ navigation }: any) {
   };
 
   return (
+    // 4. Use os estilos dinâmicos
     <View style={styles.wrapper}>
       <View style={styles.container}>
         <Text style={styles.title}>HOME</Text>
@@ -55,10 +59,11 @@ export default function Home({ navigation }: any) {
   );
 }
 
-const styles = StyleSheet.create({
+// 5. Transforme o StyleSheet numa função que recebe o tema
+const getStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: theme.colors.background,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
@@ -71,12 +76,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#00FF00',
+    color: theme.colors.primary,
     textAlign: 'center',
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#00FF00',
+    backgroundColor: theme.colors.primary,
     paddingVertical: 15,
     borderRadius: 25,
     alignItems: 'center',
@@ -84,7 +89,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   buttonText: {
-    color: '#000',
+    color: theme.colors.background,
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -93,12 +98,12 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: '#00FF00',
+    borderColor: theme.colors.primary,
     alignItems: 'center',
     width: '100%',
   },
   backButtonText: {
-    color: '#00FF00',
+    color: theme.colors.primary,
     fontWeight: 'bold',
     fontSize: 16,
   },
@@ -106,7 +111,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     textAlign: 'center',
-    color: '#555',
+    color: theme.colors.border,
     fontSize: 12,
     width: '100%',
   },

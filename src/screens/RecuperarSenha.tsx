@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../context/ThemeContext';
 
 export default function ForgotPassword() {
+  const theme = useTheme();
+  const styles = getStyles(theme);
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [mensagem, setMensagem] = useState('');
@@ -35,7 +38,7 @@ export default function ForgotPassword() {
       <TextInput
         style={styles.input}
         placeholder="Email"
-        placeholderTextColor="#00FF00"
+        placeholderTextColor={theme.colors.primary}
         keyboardType="email-address"
         onChangeText={setEmail}
         value={email}
@@ -60,43 +63,43 @@ export default function ForgotPassword() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: theme.colors.background,
     justifyContent: 'center',
     padding: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#00FF00',
+    color: theme.colors.primary,
     marginBottom: 30,
     textAlign: 'center',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#00FF00',
+    borderColor: theme.colors.primary,
     borderRadius: 25,
-    color: '#fff',
+    color: theme.colors.text,
     paddingHorizontal: 20,
     paddingVertical: 12,
     marginBottom: 15,
   },
   button: {
-    backgroundColor: '#00FF00',
+    backgroundColor: theme.colors.primary,
     padding: 15,
     borderRadius: 25,
     alignItems: 'center',
     marginBottom: 20,
   },
   buttonText: {
-    color: '#000',
+    color: theme.colors.background,
     fontWeight: 'bold',
     fontSize: 16,
   },
   link: {
-    color: '#00FF00',
+    color: theme.colors.primary,
     textAlign: 'center',
     textDecorationLine: 'underline',
   },
@@ -107,9 +110,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   erro: {
-    color: '#ff4d4d',
+    color: theme.colors.error,
   },
   sucesso: {
-    color: '#00FF00',
+    color: theme.colors.primary,
   },
 });
