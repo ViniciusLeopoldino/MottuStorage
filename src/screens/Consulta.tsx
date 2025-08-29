@@ -1,12 +1,39 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Keyboard } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Keyboard 
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { api } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
 
-interface Veiculo { id: number; placa: string; chassi: string; modelo: string; km: number; contrato: string; ocorrencia: string; }
-interface Localizacao { id: number; armazem: string; rua: string; modulo: string; compartimento: string; }
-interface ResultadoBusca { veiculo: Veiculo; localizacao?: Localizacao; }
+// --- Interfaces para definir o formato dos dados que a API retorna ---
+interface Veiculo {
+  id: number;
+  placa: string;
+  chassi: string;
+  modelo: string;
+  km: number;
+  contrato: string;
+  ocorrencia: string;
+}
+interface Localizacao {
+  id: number;
+  armazem: string;
+  rua: string;
+  modulo: string;
+  compartimento: string;
+}
+// A API agora retorna um objeto que contém o veículo e, opcionalmente, a localização
+interface ResultadoBusca {
+  veiculo: Veiculo;
+  localizacao?: Localizacao;
+}
 
 export default function Consulta() {
   const theme = useTheme();
@@ -22,11 +49,14 @@ export default function Consulta() {
     Keyboard.dismiss();
     setMensagem('');
     setResultado(null);
+
     if (!query) {
       setMensagem('Por favor, insira um termo para a busca.');
       return;
     }
+
     setIsLoading(true);
+
     try {
       const apiResult = await api.searchVehicle(query);
       setResultado(apiResult);
@@ -42,7 +72,14 @@ export default function Consulta() {
     <View style={styles.wrapper}>
       <View style={styles.container}>
         <Text style={styles.title}>CONSULTA DE VEÍCULO</Text>
-        <TextInput style={styles.input} placeholder="Insira PLACA, CHASSI ou CONTRATO" placeholderTextColor={theme.colors.primary} value={query} onChangeText={setQuery} autoCapitalize="characters" />
+        <TextInput
+          style={styles.input}
+          placeholder="Insira PLACA, CHASSI ou CONTRATO"
+          placeholderTextColor={theme.colors.primary}
+          value={query}
+          onChangeText={setQuery}
+          autoCapitalize="characters"
+        />
         
         {isLoading ? (
           <ActivityIndicator size="large" color={theme.colors.primary} style={{ marginVertical: 15 }} />
@@ -56,16 +93,15 @@ export default function Consulta() {
           <Text style={styles.mensagemErro}>{mensagem}</Text>
         )}
 
+        {/* --- AJUSTE AQUI --- */}
+        {/* Acessamos resultado.veiculo para os dados do veículo */}
         {resultado && (
           <View style={styles.resultado}>
             <Text style={styles.resultadoTitulo}>Dados do Veículo:</Text>
             <Text style={styles.resultadoTexto}>PLACA: {resultado.veiculo.placa}</Text>
             <Text style={styles.resultadoTexto}>CHASSI: {resultado.veiculo.chassi}</Text>
             <Text style={styles.resultadoTexto}>MODELO: {resultado.veiculo.modelo}</Text>
-            {/* <Text style={styles.resultadoTexto}>KM: {veiculoEncontrado.km}</Text> */}
-            {/* <Text style={styles.resultadoTexto}>CONTRATO: {veiculoEncontrado.contrato}</Text> */}
-            {/* <Text style={styles.resultadoTexto}>OCORRÊNCIA: {veiculoEncontrado.ocorrencia}</Text> */}
-
+            
             {/* Mostra a localização se ela existir */}
             {resultado.localizacao && (
               <>
@@ -78,7 +114,10 @@ export default function Consulta() {
           </View>
         )}
       </View>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home')}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.navigate('Home')}
+      >
         <Text style={styles.backButtonText}>VOLTAR</Text>
       </TouchableOpacity>
       <Text style={styles.footer}>Desenvolvido por DPV-Tech</Text>
