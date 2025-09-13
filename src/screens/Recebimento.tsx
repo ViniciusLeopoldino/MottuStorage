@@ -151,8 +151,8 @@ const Recebimento: React.FC = () => {
           {isLoading && <ActivityIndicator size="large" color={theme.colors.primary} style={{ marginVertical: 14 }} />}
           
           {veiculoEncontrado && localizacaoEncontrada && !isLoading && (
-            <TouchableOpacity style={styles.storeButton} onPress={handleArmazenar}>
-              <Text style={styles.storeButtonText}>3. ARMAZENAR</Text>
+            <TouchableOpacity style={styles.button} onPress={handleArmazenar}>
+              <Text style={styles.buttonText}>ARMAZENAR</Text>
             </TouchableOpacity>
           )}
           
@@ -178,8 +178,6 @@ const getStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
     buttonText: { color: theme.colors.background, fontSize: 16, fontWeight: 'bold' },
     backButton: { marginTop: 20, padding: 12, borderRadius: 25, borderWidth: 1, borderColor: theme.colors.primary, alignItems: 'center', width: '100%' },
     backButtonText: { color: theme.colors.primary, fontWeight: 'bold', fontSize: 16 },
-    storeButton: { width: '100%', backgroundColor: '#00aaff', borderRadius: 25, paddingVertical: 14, alignItems: 'center', marginTop: 20 },
-    storeButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
     message: { color: theme.colors.text, marginTop: 20, textAlign: 'center', fontWeight: 'bold' },
     cancelButton: { position: 'absolute', top: 40, left: 20, backgroundColor: '#000000aa', padding: 10, borderRadius: 8 },
     cancelText: { color: '#fff' },

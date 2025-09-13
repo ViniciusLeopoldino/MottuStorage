@@ -1,4 +1,4 @@
-// Define a URL base da sua API.
+// Define a URL base da API.
 // Use 'http://10.0.2.2:8080' para o emulador Android.
 // Use o IP da sua máquina na rede para um dispositivo físico.
 const BASE_URL = 'https://api-dpvtech.onrender.com/api';
@@ -21,9 +21,8 @@ async function request(endpoint: string, method: 'GET' | 'POST' | 'PUT' | 'DELET
 
   try {
     const response = await fetch(`${BASE_URL}${endpoint}`, config);
-    
-    // AJUSTE CRÍTICO: Se a resposta for 204 (No Content), a operação foi um sucesso.
-    // Retornamos uma promessa de sucesso vazia, pois não há corpo para ler.
+
+    // Se a resposta for 204 (No Content), retornamos uma promessa resolvida sem dados.
     if (response.status === 204) {
       return Promise.resolve(); 
     }
