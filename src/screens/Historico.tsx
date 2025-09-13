@@ -8,13 +8,12 @@ import {
   Alert,
   ActivityIndicator,
   RefreshControl,
-  Platform // Importe o Platform para detetar o sistema operativo
+  Platform
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { api } from '../services/api';
 import { useTheme } from '../context/ThemeContext';
 
-// Interface para definir o formato dos dados que a API retorna
 interface HistoricoItem {
   id: number;
   veiculo: {
@@ -40,7 +39,6 @@ export default function Historico() {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Função para carregar os dados do histórico da API
   const carregarHistorico = useCallback(async (showLoading = true) => {
     if (showLoading) setIsLoading(true);
     try {
@@ -54,16 +52,13 @@ export default function Historico() {
     }
   }, []);
 
-  // Recarrega os dados sempre que a tela entra em foco
   useFocusEffect(useCallback(() => { carregarHistorico(); }, [carregarHistorico]));
 
-  // Função para o "puxar para atualizar"
   const onRefresh = () => {
     setIsRefreshing(true);
     carregarHistorico(false);
   };
 
-  // --- FUNÇÃO DE EXCLUSÃO AJUSTADA PARA WEB E MOBILE ---
   const handleExcluir = (item: HistoricoItem) => {
     const executarAcao = async (acao: 'recebimento' | 'veiculo' | 'localizacao') => {
       try {
@@ -86,7 +81,6 @@ export default function Historico() {
     };
 
     if (Platform.OS === 'web') {
-      // Lógica de confirmação para a Web
       const querApagarRecebimento = window.confirm(`Deseja apagar APENAS o recebimento do veículo ${item.veiculo.placa}?`);
       if (querApagarRecebimento) {
         executarAcao('recebimento');
@@ -102,7 +96,6 @@ export default function Historico() {
         executarAcao('localizacao');
       }
     } else {
-      // Lógica de Alerta para Mobile (Nativa)
       Alert.alert(
         'Escolha uma Opção de Exclusão',
         `O que deseja apagar relacionado ao veículo ${item.veiculo.placa}?`,
@@ -114,6 +107,10 @@ export default function Historico() {
         ]
       );
     }
+  };
+
+  const handleEditar = (item: HistoricoItem) => {
+    navigation.navigate('EdicaoLocalizacao', { historicoItem: item });
   };
 
   const limparHistorico = () => {
@@ -133,9 +130,9 @@ export default function Historico() {
       }
     } else {
       Alert.alert('Confirmação', 'Deseja apagar TODO o histórico? Esta ação não pode ser desfeita.', [
-          { text: 'Cancelar', style: 'cancel' },
-          { text: 'Apagar Tudo', style: 'destructive', onPress: executarLimpeza },
-        ]);
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Apagar Tudo', style: 'destructive', onPress: executarLimpeza },
+      ]);
     }
   };
 
@@ -161,12 +158,20 @@ export default function Historico() {
                 <Text style={styles.text}>
                   Data: {new Date(item.dataRecebimento).toLocaleString('pt-BR')}
                 </Text>
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => handleExcluir(item)}
-                >
-                  <Text style={styles.deleteText}>EXCLUIR</Text>
-                </TouchableOpacity>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    style={[styles.actionButton, styles.editButton]}
+                    onPress={() => handleEditar(item)}
+                  >
+                    <Text style={styles.actionText}>EDITAR LOCALIZAÇÃO</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.actionButton, styles.deleteButton]}
+                    onPress={() => handleExcluir(item)}
+                  >
+                    <Text style={styles.actionText}>EXCLUIR</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             ))
           )}
@@ -195,8 +200,11 @@ const getStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   item: { backgroundColor: theme.colors.card, borderRadius: 8, padding: 15, marginBottom: 15, borderColor: theme.colors.border, borderWidth: 1 },
   text: { color: theme.colors.text, opacity: 0.8, marginBottom: 4 },
   textBold: { color: theme.colors.text, fontWeight: 'bold', marginBottom: 4, fontSize: 16 },
-  deleteButton: { marginTop: 10, paddingVertical: 8, backgroundColor: theme.colors.error, borderRadius: 6, alignItems: 'center' },
-  deleteText: { color: theme.colors.background, fontWeight: 'bold' },
+  buttonContainer: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
+  actionButton: { flex: 1, paddingVertical: 8, borderRadius: 6, alignItems: 'center', marginHorizontal: 5 },
+  actionText: { color: theme.colors.background, fontWeight: 'bold', fontSize: 12 },
+  editButton: { backgroundColor: theme.colors.primary },
+  deleteButton: { backgroundColor: theme.colors.error },
   footerButtons: { marginTop: 10 },
   clearButton: { backgroundColor: theme.colors.error, borderRadius: 25, paddingVertical: 14, alignItems: 'center', marginTop: 10 },
   clearButtonText: { color: theme.colors.background, fontWeight: 'bold', fontSize: 16 },

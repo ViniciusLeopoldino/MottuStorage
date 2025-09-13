@@ -22,23 +22,25 @@ async function request(endpoint: string, method: 'GET' | 'POST' | 'PUT' | 'DELET
   try {
     const response = await fetch(`${BASE_URL}${endpoint}`, config);
 
-    // Se a resposta for 204 (No Content), retornamos uma promessa resolvida sem dados.
-    if (response.status === 204) {
-      return Promise.resolve(); 
-    }
-
-    // Para todas as outras respostas, tentamos ler o corpo JSON.
-    const responseData = await response.json();
-
+    // ✨ CORREÇÃO AQUI: Se a resposta não for OK, leia o corpo como texto
     if (!response.ok) {
-      throw new Error(responseData.message || 'Ocorreu um erro na requisição.');
+      // Tenta ler a resposta como texto. Se der erro, usa uma mensagem padrão.
+      const errorText = await response.text();
+      throw new Error(errorText || 'Ocorreu um erro na requisição.');
     }
 
+    // Se a resposta for 204 (No Content) ou o corpo for vazio, não tente ler o JSON.
+    const contentLength = response.headers.get('content-length');
+    if (response.status === 204 || (contentLength !== null && parseInt(contentLength) === 0)) {
+        return Promise.resolve();
+    }
+
+    // Para respostas OK com conteúdo, tente ler o JSON.
+    const responseData = await response.json();
     return responseData;
 
   } catch (error) {
-    // Se a falha for na leitura do JSON (para respostas 204 na versão antiga),
-    // ou qualquer outro erro, ele será capturado e registado aqui.
+    // Se a falha for na leitura do JSON, ou qualquer outro erro, ele será capturado e registrado aqui.
     console.error(`Erro na requisição para ${endpoint}:`, error);
     throw error;
   }
@@ -65,4 +67,7 @@ export const api = {
   getHistory: () => request('/historico', 'GET'),
   deleteHistoryItem: (id: number) => request(`/historico/${id}`, 'DELETE'),
   clearHistory: () => request('/historico/all', 'DELETE'),
+
+  updateHistoryLocation: (id: number, novaLocalizacao: { armazem: string; rua: string; modulo: string; compartimento: string; }) =>
+    request(`/historico/${id}/localizacao`, 'PUT', novaLocalizacao),
 };
