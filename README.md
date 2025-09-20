@@ -7,8 +7,7 @@ O **Mottu Storage** é um aplicativo mobile criado para controle de entrada, ide
 
 ## 🎥 Vídeo de Apresentação    
  
-➡️ Assista à demonstração completa do aplicativo no YouTube:  
-[Apresentação do Mottu Storage](https://www.youtube.com/watch?v=_B2uQQMJLwY)
+➡️ Assista à demonstração completa do aplicativo no YouTube: [Apresentação Mottu Storage](https://www.youtube.com/watch?v=_B2uQQMJLwY)
 
 ---
 
@@ -64,42 +63,21 @@ O app **Mottu Storage** permite:
 - `AsyncStorage` para persistência local dos dados (simulando um banco de dados)  
 - Leitura de QR Code e Código de Barras  
 - Salvamento de QR Code como imagem no dispositivo  
-- Interface com tema escuro e elementos em verde  
+- Interface com tema escuro/claro e elementos em verde  
 
 ---
 
-## ▶️ Como Executar
+## ▶️ Como Utilizar
 
-### 1. Clone o repositório
+### 1. Link de Acesso
 
-```bash
-git clone https://github.com/ViniciusLeopoldino/MottuStorage.git
-cd MottuStorage
-```
+- Aplicação com deploy na plataforma Vercel, link de acesso: [MottuStorage](https://mottu-storage.vercel.app/)
 
-### 2. Instale as dependências
-
-```bash
-npm install
-```
-
-### 3. Execute
-
-```bash
-npx expo start
-```
-
-### 4. Pressione **W** para abrir no navegador
-
-```bash
-w
-```
-
-### 5. Login
+### 2. Login
 
 -  Você precisa criar o cadastro do usuário para realizar o login
 
-### 6. Funcionalidades
+### 3. Funcionalidades (após acesso)
 
 #### Cadastro  
 - Use para cadastrar Veículos e Localizações  
