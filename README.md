@@ -66,8 +66,8 @@ O app **Mottu Storage** permite:
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/mottu-storage.git
-cd mottu-storage
+git clone https://github.com/ViniciusLeopoldino/MottuStorage.git
+cd MottuStorage
 ```
 
 ### 2. Instale as dependências
