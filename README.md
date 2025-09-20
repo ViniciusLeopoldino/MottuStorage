@@ -1,10 +1,10 @@
 
 ## 👨‍💻 GRUPO CHALLENGE
 
-| RM                        | NOME                                                            |
-|---------------------------|-----------------------------------------------------------------|
-| **557047**                | Vinicius Leopoldino de Oliveira                                 |
-| **556834**                | Pablo Lopes Doria de Andrade                                    |
+| RM                        | NOME                             | GITHUB                                                      |
+|---------------------------|----------------------------------|-------------------------------------------------------------|
+| **557047**                | Vinicius Leopoldino de Oliveira  |[Vinicius Leopoldino](https://github.com/ViniciusLeopoldino) |
+| **556834**                | Pablo Lopes Doria de Andrade     |[Pablo Lopes](https://github.com/Pablo0703)                  |
 
 **Curso:** Análise e Desenvolvimento de Sistemas - FIAP
 
