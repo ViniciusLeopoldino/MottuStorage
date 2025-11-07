@@ -1,4 +1,4 @@
-const BASE_URL = 'https://api-dpvtech.onrender.com/api';
+const BASE_URL = 'https://api-java-dpvtech.onrender.com/api';
 
 async function request(endpoint: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', body?: any) {
   const headers = { 'Content-Type': 'application/json' };

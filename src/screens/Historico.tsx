@@ -27,7 +27,7 @@ interface HistoricoItem {
     modulo: string;
     compartimento: string;
   };
-  dataRecebimento: string;
+  dataHora: string; 
 }
 
 export default function Historico() {
@@ -156,7 +156,7 @@ export default function Historico() {
                   Local: {`${item.localizacao.armazem}-${item.localizacao.rua}-${item.localizacao.modulo}-${item.localizacao.compartimento}`}
                 </Text>
                 <Text style={styles.text}>
-                  Data: {new Date(item.dataRecebimento).toLocaleString('pt-BR')}
+                  Data: {new Date(item.dataHora).toLocaleString('pt-BR')}
                 </Text>
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity

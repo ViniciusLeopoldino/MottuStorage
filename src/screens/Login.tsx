@@ -34,8 +34,9 @@ export default function Login({ navigation }: any) {
 
     try {
       const response = await api.login(email, senha);
-      if (response && response.user) {
-        await loginContext(response.user);
+      console.log('Resposta completa:', response); // ← Para debug
+      if (response && response.id) {
+        await loginContext(response);
       } else {
         setMensagemErro('Resposta inválida do servidor.');
       }

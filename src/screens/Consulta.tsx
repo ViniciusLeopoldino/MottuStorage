@@ -43,28 +43,51 @@ export default function Consulta() {
   const [isLoading, setIsLoading] = useState(false);
   const [mensagem, setMensagem] = useState('');
 
-  const handleConsultar = async () => {
-    Keyboard.dismiss();
-    setMensagem('');
-    setResultado(null);
+const handleConsultar = async () => {
+  Keyboard.dismiss();
+  setMensagem('');
+  setResultado(null);
 
-    if (!query) {
-      setMensagem('Por favor, insira um termo para a busca.');
-      return;
-    }
+  if (!query) {
+    setMensagem('Por favor, insira um termo para a busca.');
+    return;
+  }
 
-    setIsLoading(true);
+  setIsLoading(true);
 
-    try {
-      const apiResult = await api.searchVehicle(query);
-      setResultado(apiResult);
-    } catch (error: any) {
-      setResultado(null);
+  try {
+    // 1. Busca o veículo
+    const veiculos = await api.searchVehicle(query);
+    console.log('Veículos encontrados:', veiculos);
+    
+    if (veiculos && veiculos.length > 0) {
+      const veiculoEncontrado = veiculos[0];
+      
+      // 2. Busca o histórico para encontrar a localização
+      const historico = await api.getHistory();
+      console.log('Histórico completo:', historico);
+      
+      // Encontra o histórico mais recente deste veículo
+      const historicoVeiculo = historico
+        .filter((h: any) => h.veiculo && h.veiculo.id === veiculoEncontrado.id)
+        .sort((a: any, b: any) => new Date(b.dataHora).getTime() - new Date(a.dataHora).getTime())[0];
+      
+      console.log('Histórico do veículo:', historicoVeiculo);
+      
+      setResultado({
+        veiculo: veiculoEncontrado,
+        localizacao: historicoVeiculo?.localizacao
+      });
+    } else {
       setMensagem('Veículo não encontrado.');
-    } finally {
-      setIsLoading(false);
     }
-  };
+  } catch (error: any) {
+    setResultado(null);
+    setMensagem(error.message || 'Erro na consulta.');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <View style={styles.wrapper}>
@@ -95,7 +118,7 @@ export default function Consulta() {
           <View style={styles.resultado}>
             <Text style={styles.resultadoTitulo}>Dados do Veículo:</Text>
             <Text style={styles.resultadoTexto}>PLACA: {resultado.veiculo.placa}</Text>
-            <Text style={styles.resultadoTexto}>CHASSI: {resultado.veiculo.chassi}</Text>
+            {/* <Text style={styles.resultadoTexto}>CHASSI: {resultado.veiculo.chassi}</Text> */}
             <Text style={styles.resultadoTexto}>MODELO: {resultado.veiculo.modelo}</Text>
             {resultado.localizacao && (
               <>

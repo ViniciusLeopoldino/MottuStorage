@@ -57,30 +57,44 @@ const Recebimento: React.FC = () => {
     }
   };
 
-  const handleWebSearch = async (type: 'veiculo' | 'local') => {
-    setIsLoading(true);
-    setMensagem('');
-    try {
-      if (type === 'veiculo') {
-        if (!webInputVeiculo) throw new Error('Preencha o campo do veículo.');
-        const result = await api.searchVehicle(webInputVeiculo);
-
-        setVeiculoEncontrado(result.veiculo);
-        setMensagem(`Veículo ${result.veiculo.placa} encontrado!`);
-
+const handleWebSearch = async (type: 'veiculo' | 'local') => {
+  setIsLoading(true);
+  setMensagem('');
+  try {
+    if (type === 'veiculo') {
+      if (!webInputVeiculo) throw new Error('Preencha o campo do veículo.');
+      
+      // CORREÇÃO AQUI ↓↓↓
+      const result = await api.searchVehicle(webInputVeiculo);
+      console.log('Resultado busca veículo:', result); // Para debug
+      
+      if (result && result.length > 0) {
+        setVeiculoEncontrado(result[0]); // ← Pega o primeiro veículo do array
+        setMensagem(`Veículo ${result[0].placa} encontrado!`);
       } else {
-        if (!webInputLocalizacao.armazem) throw new Error('Preencha os campos da localização.');
-        const result = await api.searchLocation(webInputLocalizacao);
-
-        setLocalizacaoEncontrada(result);
-        setMensagem(`Localização ${result.armazem} encontrada!`);
+        throw new Error('Veículo não encontrado');
       }
-    } catch (error) {
-      setMensagem(type === 'veiculo' ? 'Veículo não encontrado.' : 'Localização não encontrada.');
-    } finally {
-      setIsLoading(false);
+
+    } else {
+      if (!webInputLocalizacao.armazem) throw new Error('Preencha os campos da localização.');
+      
+      // CORREÇÃO AQUI ↓↓↓
+      const result = await api.searchLocation(webInputLocalizacao);
+      console.log('Resultado busca localização:', result); // Para debug
+      
+      if (result && result.length > 0) {
+        setLocalizacaoEncontrada(result[0]); // ← Pega a primeira localização do array
+        setMensagem(`Localização ${result[0].armazem} encontrada!`);
+      } else {
+        throw new Error('Localização não encontrada');
+      }
     }
-  };
+  } catch (error) {
+    setMensagem(error instanceof Error ? error.message : 'Erro na busca');
+  } finally {
+    setIsLoading(false);
+  }
+};
   
   const handleArmazenar = async () => {
     if (!veiculoEncontrado || !localizacaoEncontrada) return;
