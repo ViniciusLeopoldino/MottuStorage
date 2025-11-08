@@ -27,6 +27,8 @@ export default function CadastroVeiculo() {
     placa: '',
     chassi: '',
     modelo: '',
+    marca: '',      
+    cor: '',        
     km: '',
     contrato: '',
     ocorrencia: '',
@@ -37,7 +39,7 @@ export default function CadastroVeiculo() {
   const [tipoMensagem, setTipoMensagem] = useState<'erro' | 'sucesso' | ''>('');
 
   const limparCampos = () => {
-    setVeiculo({ placa: '', chassi: '', modelo: '', km: '', contrato: '', ocorrencia: '' });
+    setVeiculo({ placa: '', chassi: '', modelo: '', marca: '', cor: '', km: '', contrato: '', ocorrencia: '' });
     setMensagem('');
     setTipoMensagem('');
   };
@@ -105,7 +107,7 @@ export default function CadastroVeiculo() {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Registo de Veículos</Text>
         <View style={styles.form}>
-          {(['placa', 'chassi', 'modelo', 'km', 'contrato', 'ocorrencia'] as const).map((key) => (
+          {(['placa', 'chassi', 'modelo', 'marca', 'cor', 'km', 'contrato', 'ocorrencia'] as const).map((key) => (
             <TextInput
               key={key}
               style={styles.input}
