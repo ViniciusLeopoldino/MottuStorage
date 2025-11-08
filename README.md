@@ -58,13 +58,31 @@ O app **Mottu Storage** permite:
 
 ## 🛠️ Tecnologias Utilizadas
 
+### Frontend
 - **React Native + Expo**  
 - **React Navigation**  
 - **Expo Camera / BarcodeScanner**  
 - **QRCode API**  
-- **AsyncStorage** (simulação de cadastro e armazenamento local dos dados)  
+- **AsyncStorage** (armazenamento local)  
 - **Expo FileSystem + MediaLibrary**  
-- **TypeScript**  
+- **TypeScript**
+
+### Backend
+- **Java Spring Boot** - API REST
+- **PostgreSQL** - Banco de dados em produção
+- **H2 Database** - Banco em memória para desenvolvimento
+- **Spring Security** - Autenticação e hash de senhas
+- **Spring Data JPA** - Persistência de dados
+- **Docker** - Containerização
+
+---
+
+## 🔐 Segurança
+
+- **Senhas com hash BCrypt** - Nenhuma senha é armazenada em texto claro
+- **Autenticação via JWT** - Tokens seguros para sessões
+- **CORS configurado** - Comunicação segura entre frontend e backend
+- **Validação de dados** - Spring Validation em todos os endpoints
 
 ---
 
@@ -82,7 +100,8 @@ O app **Mottu Storage** permite:
 
 ### 1. Link de Acesso
 
-- Aplicação com deploy na plataforma Vercel, link de acesso: [MottuStorage](https://mottu-storage.vercel.app/)
+- **Frontend**: [MottuStorage - Vercel](https://mottu-storage.vercel.app/)
+- **Backend API**: [API Java - Render](https://api-java-dpvtech.onrender.com)
 
 ### 2. Login
 
